@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="120" height="68" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="30">
+ <tileset firstgid="1" name="tileset" tilewidth="1920" tileheight="1080" tilecount="3" columns="0">
+  <grid orientation="orthogonal" width="1" height="1"/>
+  <tile id="0">
+   <image width="128" height="128" source="foo-object.png"/>
+  </tile>
+  <tile id="1">
+   <image width="80" height="160" source="player.png"/>
+  </tile>
+  <tile id="2">
+   <image width="1920" height="1080" source="room-background.png"/>
+  </tile>
+ </tileset>
+ <objectgroup id="4" name="background">
+  <object id="13" gid="3" x="0" y="1088" width="1920" height="1080"/>
+ </objectgroup>
+ <objectgroup id="7" name="walkboxes">
+  <object id="29" type="walkbox" x="130" y="598">
+   <polygon points="0,0 -116,78 -114,468 1768,472 1768,0"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="6" name="game">
+  <object id="14" name="player" type="playe" gid="2" x="435" y="630" width="80" height="160"/>
+ </objectgroup>
+ <objectgroup id="5" name="foreground">
+  <object id="15" gid="1" x="0" y="1088" width="128" height="128"/>
+  <object id="16" gid="1" x="160" y="1088" width="128" height="128"/>
+  <object id="17" gid="1" x="80" y="960" width="128" height="64"/>
+  <object id="18" gid="1" x="368" y="1088" width="128" height="128"/>
+  <object id="19" gid="1" x="496" y="1088" width="128" height="80"/>
+  <object id="20" gid="1" x="592" y="1008" width="128" height="112"/>
+  <object id="21" gid="1" x="672" y="1088" width="128" height="80"/>
+  <object id="22" gid="1" x="880" y="1088" width="128" height="128"/>
+  <object id="23" gid="1" x="1056" y="1088" width="128" height="64"/>
+  <object id="24" gid="1" x="1120" y="1024" width="128" height="128"/>
+  <object id="25" gid="1" x="1248" y="1088" width="128" height="128"/>
+  <object id="26" gid="1" x="1312" y="960" width="128" height="80"/>
+  <object id="27" gid="1" x="1424" y="1088" width="128" height="128"/>
+  <object id="28" gid="1" x="1600" y="1088" width="128" height="64"/>
+ </objectgroup>
+</map>
