@@ -15,6 +15,12 @@ local function endGame()
    composer.gotoScene("scene.menu", {time = 800, effect = "crossFade"})
 end
 
+local function walkTo(event)
+   io.write(event.x .. event.y)
+   player.x = event.x
+   player.y = event.y
+end
+
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -26,10 +32,20 @@ function scene:create(event)
    local mapFilename = "scene/game/map/testing.json"
    local mapData = json.decodeFile( system.pathForFile( mapFilename, system.ResourceDirectory ) )
    local map = tiled.new( mapData, "scene/game/map" )
-   
-   myLayer = map:findLayer( "walkboxes" )
-   myLayer.alpha = 0.5
-   myLayer.isVisible = false
+   map.extensions = "scene.game.lib."
+ 
+   walkboxLayer = map:findLayer("walkboxes")
+   walkboxLayer.alpha = 0.5
+   walkboxLayer.isVisible = false
+   walkboxLayer.isHitTestable = true
+   walkboxes = map:listTypes("walkbox")
+   for _, v in ipairs(walkboxes) do
+      v:addEventListener( "tap", walkTo )
+   end
+
+   map:extend("player")
+   player = map:findObject("player")
+
    sceneGroup:insert(map)
 
    local endButton = display.newText(sceneGroup, "End Game", display.contentCenterX, 32, native.systemFont, 44)
