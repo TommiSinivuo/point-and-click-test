@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="120" height="68" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="30">
- <tileset firstgid="1" name="tileset" tilewidth="1920" tileheight="1080" tilecount="3" columns="0">
+<map version="1.2" tiledversion="1.2.1" orientation="orthogonal" renderorder="right-down" width="240" height="68" tilewidth="16" tileheight="16" infinite="0" nextlayerid="8" nextobjectid="50">
+ <tileset firstgid="1" name="tileset" tilewidth="1920" tileheight="1080" tilecount="4" columns="0">
   <grid orientation="orthogonal" width="1" height="1"/>
   <tile id="0">
    <image width="128" height="128" source="foo-object.png"/>
@@ -11,17 +11,24 @@
   <tile id="2">
    <image width="1920" height="1080" source="room-background.png"/>
   </tile>
+  <tile id="3">
+   <image width="1920" height="1080" source="room-background2.png"/>
+  </tile>
  </tileset>
  <objectgroup id="4" name="background">
   <object id="13" gid="3" x="0" y="1088" width="1920" height="1080"/>
+  <object id="31" gid="4" x="1920" y="1088" width="1920" height="1080"/>
  </objectgroup>
  <objectgroup id="7" name="walkboxes">
   <object id="29" type="walkbox" x="130" y="598">
    <polygon points="0,0 -116,78 -114,468 1768,472 1768,0"/>
   </object>
+  <object id="49" type="walkbox" x="1898" y="598">
+   <polygon points="0,0 0,470.667 1924.67,474 1928.67,80.6667 1811.33,-0.666667"/>
+  </object>
  </objectgroup>
  <objectgroup id="6" name="game">
-  <object id="14" name="player" type="playe" gid="2" x="435" y="630" width="80" height="160"/>
+  <object id="14" name="player" type="player" gid="2" x="435" y="630" width="80" height="160"/>
  </objectgroup>
  <objectgroup id="5" name="foreground">
   <object id="15" gid="1" x="0" y="1088" width="128" height="128"/>
@@ -38,5 +45,20 @@
   <object id="26" gid="1" x="1312" y="960" width="128" height="80"/>
   <object id="27" gid="1" x="1424" y="1088" width="128" height="128"/>
   <object id="28" gid="1" x="1600" y="1088" width="128" height="64"/>
+  <object id="32" gid="1" x="1840" y="1088" width="128" height="128"/>
+  <object id="33" gid="1" x="2016" y="1088" width="128" height="80"/>
+  <object id="34" gid="1" x="2160" y="1088" width="128" height="112"/>
+  <object id="35" gid="1" x="2224" y="976" width="128" height="128"/>
+  <object id="36" gid="1" x="2320" y="1088" width="128" height="112"/>
+  <object id="37" gid="1" x="2480" y="1088" width="128" height="80"/>
+  <object id="38" gid="1" x="2480" y="1008" width="128" height="128"/>
+  <object id="39" gid="1" x="2672" y="1088" width="128" height="128"/>
+  <object id="40" gid="1" x="2944" y="1088" width="128" height="112"/>
+  <object id="41" gid="1" x="3136" y="1088" width="128" height="96"/>
+  <object id="42" gid="1" x="3184" y="992" width="128" height="80"/>
+  <object id="43" gid="1" x="3296" y="1088" width="128" height="96"/>
+  <object id="44" gid="1" x="3392" y="992" width="128" height="112"/>
+  <object id="45" gid="1" x="3472" y="1088" width="128" height="96"/>
+  <object id="46" gid="1" x="3648" y="1088" width="128" height="80"/>
  </objectgroup>
 </map>

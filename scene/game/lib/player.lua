@@ -1,3 +1,5 @@
+local composer = require("composer")
+
 local M = {}
 
 function M.new(instance, options)

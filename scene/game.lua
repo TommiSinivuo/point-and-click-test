@@ -1,6 +1,7 @@
 local composer = require("composer")
 local tiled = require("com.ponywolf.ponytiled")
 local json = require("json")
+local perspective = require("com.gymbylcoding.perspective")
 
 local scene = composer.newScene()
 
@@ -9,16 +10,64 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
+local map
 local player
+local camera
 
-local function endGame()
-   composer.gotoScene("scene.menu", {time = 800, effect = "crossFade"})
+local function loadMap()
+   local mapFilename = "scene/game/map/testing.json"
+   local mapData = json.decodeFile(system.pathForFile(mapFilename, system.ResourceDirectory))
+   return tiled.new(mapData, "scene/game/map")
+end
+
+local function extendMapObjects(map)
+   map.extensions = "scene.game.lib."
+   map:extend("player")
+end
+
+local function loadAndExtendMap()
+   local map = loadMap()
+   extendMapObjects(map)
+   return map
+end
+
+local function scrollMap()
+   local x, y = player:localToContent( 0, 0 )
+   x, y = display.contentCenterX - x, display.contentCenterY - y
+   map.x, map.y = map.x + x, map.y + y
+   player.x, player.y = player.x + x, player.y + y
 end
 
 local function walkTo(event)
-   io.write(event.x .. event.y)
-   player.x = event.x
-   player.y = event.y
+   transition.to(player, { x=event.x, y=event.y, time=1000 })
+end
+
+local function configureWalkboxes(map)
+   local walkboxLayer = map:findLayer("walkboxes")
+   walkboxLayer.alpha = 0.5
+   walkboxLayer.isVisible = true
+   walkboxLayer.isHitTestable = true
+   local walkboxes = map:listTypes("walkbox")
+   for _, v in ipairs(walkboxes) do
+      v:addEventListener("tap", walkTo)
+   end
+end
+
+local function createCamera(map)
+   local camera = perspective.createView()
+   camera:add(map:findLayer("background"), 5, false)
+   camera:add(map:findLayer("walkboxes"), 4, false)
+   camera:add(map:findLayer("game", 3, false))
+   camera:add(player, 2, true)
+   camera:add(map:findLayer("foreground"), 1, false) 
+   camera.damping = 10
+   camera:track()
+   return camera
+end
+
+
+local function endGame()
+   composer.gotoScene("scene.menu", {time = 800, effect = "crossFade"})
 end
 
 -- -----------------------------------------------------------------------------------
@@ -29,22 +78,12 @@ end
 function scene:create(event)
    local sceneGroup = self.view
    -- Code here runs when the scene is first created but has not yet appeared on screen
-   local mapFilename = "scene/game/map/testing.json"
-   local mapData = json.decodeFile( system.pathForFile( mapFilename, system.ResourceDirectory ) )
-   local map = tiled.new( mapData, "scene/game/map" )
-   map.extensions = "scene.game.lib."
- 
-   walkboxLayer = map:findLayer("walkboxes")
-   walkboxLayer.alpha = 0.5
-   walkboxLayer.isVisible = false
-   walkboxLayer.isHitTestable = true
-   walkboxes = map:listTypes("walkbox")
-   for _, v in ipairs(walkboxes) do
-      v:addEventListener( "tap", walkTo )
-   end
-
-   map:extend("player")
+   map = loadAndExtendMap()
    player = map:findObject("player")
+
+   configureWalkboxes(map)
+
+   camera = createCamera(map)
 
    sceneGroup:insert(map)
 
