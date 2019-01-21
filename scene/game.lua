@@ -31,15 +31,11 @@ local function loadAndExtendMap()
    return map
 end
 
-local function scrollMap()
-   local x, y = player:localToContent( 0, 0 )
-   x, y = display.contentCenterX - x, display.contentCenterY - y
-   map.x, map.y = map.x + x, map.y + y
-   player.x, player.y = player.x + x, player.y + y
-end
-
 local function walkTo(event)
-   transition.to(player, { x=event.x, y=event.y, time=1000 })
+   local playerContentX, playerContentY = player:localToContent(0, 0)
+   local dx, dy = event.x - playerContentX, event.y - playerContentY
+   local targetX, targetY = player.x + dx, player.y + dy
+   transition.to(player, { x=targetX, y=targetY, time=1000 })
 end
 
 local function configureWalkboxes(map)
