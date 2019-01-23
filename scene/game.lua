@@ -51,11 +51,12 @@ end
 
 local function createCamera(map)
    local camera = perspective.createView()
-   camera:add(map:findLayer("background"), 5, false)
-   camera:add(map:findLayer("walkboxes"), 4, false)
-   camera:add(map:findLayer("game", 3, false))
-   camera:add(player, 2, true)
-   camera:add(map:findLayer("foreground"), 1, false) 
+   camera:add(map:findLayer("background"), 6, false)
+   camera:add(map:findLayer("walkboxes"), 5, false)
+   camera:add(map:findLayer("game", 4, false))
+   camera:add(player, 3, true)
+   camera:add(map:findLayer("foreground"), 2, false) 
+   camera:layer(2).xParallax = 1.25
    camera.damping = 10
    camera:track()
    return camera

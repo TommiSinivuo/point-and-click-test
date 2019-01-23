@@ -7,11 +7,11 @@
 local composer = require("composer")
 
 function runUnitTestSuites()
-	require "testmain"
+   require "testmain"
 end
 
 if system.getInfo( "environment" ) == "simulator" then
-	runUnitTestSuites()
+   runUnitTestSuites()
 end
 
 -- hide statusbar
