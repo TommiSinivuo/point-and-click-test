@@ -49,15 +49,40 @@ local function configureWalkboxes(map)
    end
 end
 
-local function createCamera(map)
+local layerNameToNumber = {}
+
+local function getLayerNumber( name )
+   return layerNameToNumber[name]
+end
+
+local function getCameraLayerByName( camera, layerName )
+   return camera:layer(getLayerNumber(layerName))
+end
+
+local function createCamera( map )
    local camera = perspective.createView()
-   camera:add(map:findLayer("background"), 6, false)
-   camera:add(map:findLayer("walkboxes"), 5, false)
-   camera:add(map:findLayer("game", 4, false))
-   camera:add(player, 3, true)
-   camera:add(map:findLayer("foreground"), 2, false) 
-   camera:layer(2).xParallax = 1.25
+   -- perspective.lua does some really weird stuff behind the curtains
+   -- For some reason it mutates the 'map' table, removing every display group
+   -- that is added to perspective. This is why looping the Tiled layers have
+   -- to be done so that we first assign the total layer count to a variable
+   -- (because map.numChildren changes dynamically while we loop) and then
+   -- always take the first layer (because the previously added layer is popped
+   -- from the table) and add it to perspective.
+   -- Also, layer 1 seems to work differently in perpective (parallax settings won't apply),
+   -- so therefore we use number 2 as the smallest layer number. The layer number doesn't
+   -- really matter, as long as they're in the correct order.
+   local layerCount = map.numChildren
+   for layerNum=1, layerCount do
+      local layerName = map[1].name
+      local cameraLayerNum = layerCount - ( layerNum - 2 )
+      print( layerNum .. ": " .. layerName .. " (" .. cameraLayerNum .. ")" )
+      local tiledLayer = map:findLayer( layerName )
+      camera:add( tiledLayer, cameraLayerNum, false )
+      layerNameToNumber[layerName] = cameraLayerNum
+   end
+   getCameraLayerByName(camera, "foreground").xParallax = 1.25
    camera.damping = 10
+   camera:setFocus( player )
    camera:track()
    return camera
 end
