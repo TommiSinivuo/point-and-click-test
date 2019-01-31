@@ -62,8 +62,9 @@ end
 
 local function createCamera(map)
    local camera = TiledPerspective:new()
-   camera:load(map) 
-   camera:findLayer("foreground").xParallax = 1.25
+   camera:load(map)
+   camera:setBounds(950, 2890, 0, 560)
+   camera:findLayer("foreground").xParallax = 1.5
    camera:setDamping(10)
    camera:setFocus(player)
    camera:track()
