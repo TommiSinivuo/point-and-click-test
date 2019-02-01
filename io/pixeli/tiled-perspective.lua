@@ -39,6 +39,10 @@ function TiledPerspective:findLayer(name)
    return self.camera:layer(self.layerNumForName[name])
 end
 
+function TiledPerspective:setBounds(x1, x2, y1, y2)
+   self.camera:setBounds(x1, x2, y1, y2)
+end
+
 function TiledPerspective:setDamping(value)
    self.camera.damping = value
 end
