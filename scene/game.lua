@@ -33,6 +33,7 @@ local function loadAndExtendMap()
 end
 
 local function walkTo(event)
+   print("event XY: " .. event.x .. "," .. event.y)
    local playerContentX, playerContentY = player:localToContent(0, 0)
    local dx, dy = event.x - playerContentX, event.y - playerContentY
    local targetX, targetY = player.x + dx, player.y + dy
@@ -63,7 +64,7 @@ end
 local function createCamera(map)
    local camera = TiledPerspective:new()
    camera:load(map)
-   camera:setBounds(950, 2890, 0, 560)
+   camera:setBounds(950, 2890, 560, 560)
    camera:findLayer("foreground").xParallax = 1.5
    camera:setDamping(10)
    camera:setFocus(player)
