@@ -1,19 +1,19 @@
 local perspective = require("com.gymbylcoding.perspective")
 
-TiledPerspective = {}
+Camera = {}
 
-function TiledPerspective:new(o)
+function Camera:new(o)
    o = o or {}
    self.__index = self
    setmetatable(o, self)
 
-   self.camera = perspective.createView()
+   self.view = perspective.createView()
    self.layerNumForName = {}
 
    return o
 end
 
-function TiledPerspective:load(map)
+function Camera:addLayers(map)
    -- perspective.lua does some really weird stuff behind the curtains
    -- For some reason it mutates the 'map' table, removing every display group
    -- that is added to perspective. This is why looping the Tiled layers have
@@ -30,29 +30,44 @@ function TiledPerspective:load(map)
       local cameraLayerNum = layerCount - (layerNum - 2)
       print( layerNum .. ": " .. layerName .. " (" .. cameraLayerNum .. ")" )
       local tiledLayer = map:findLayer(layerName)
-      self.camera:add(tiledLayer, cameraLayerNum, false)
+      self.view:add(tiledLayer, cameraLayerNum, false)
       self.layerNumForName[layerName] = cameraLayerNum
-   end
+   end 
 end
 
-function TiledPerspective:findLayer(name)
-   return self.camera:layer(self.layerNumForName[name])
+function Camera:findLayer(name)
+   return self.view:layer(self.layerNumForName[name])
 end
 
-function TiledPerspective:setBounds(x1, x2, y1, y2)
-   self.camera:setBounds(x1, x2, y1, y2)
+function Camera:setBounds(bounds)
+   self.view:setBounds(bounds.xMin, bounds.xMax, bounds.yMin, bounds.yMax)
 end
 
-function TiledPerspective:setDamping(value)
-   self.camera.damping = value
+local function calculateCameraBounds(contentBounds)
+   local cameraBounds = {}
+   cameraBounds.xMin = contentBounds.xMin + (display.contentWidth / 2)
+   cameraBounds.yMin = contentBounds.yMin + (display.contentHeight / 2)
+   cameraBounds.xMax = contentBounds.xMax - (display.contentWidth / 2)
+   cameraBounds.yMax = contentBounds.yMax - (display.contentHeight / 2)
+   return cameraBounds
 end
 
-function TiledPerspective:setFocus(obj)
-   self.camera:setFocus(obj)
+function Camera:setBoundsFromLayer(name)
+   local contentBounds = self:findLayer(name).contentBounds
+   cameraBounds = calculateCameraBounds(contentBounds)
+   self:setBounds(cameraBounds)
 end
 
-function TiledPerspective:track()
-   self.camera:track()
+function Camera:setDamping(value)
+   self.view.damping = value
 end
 
-return TiledPerspective
+function Camera:setFocus(obj)
+   self.view:setFocus(obj)
+end
+
+function Camera:track()
+   self.view:track()
+end
+
+return Camera

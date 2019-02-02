@@ -2,7 +2,7 @@ local composer = require("composer")
 local tiled = require("com.ponywolf.ponytiled")
 local json = require("json")
 local perspective = require("com.gymbylcoding.perspective")
-local TiledPerspective = require("io.pixeli.tiled-perspective")
+local Camera = require("io.pixeli.camera")
 
 local scene = composer.newScene()
 
@@ -62,9 +62,9 @@ local function getCameraLayerByName( camera, layerName )
 end
 
 local function createCamera(map)
-   local camera = TiledPerspective:new()
-   camera:load(map)
-   camera:setBounds(950, 2890, 560, 560)
+   local camera = Camera:new()
+   camera:addLayers(map)
+   camera:setBoundsFromLayer("background")
    camera:findLayer("foreground").xParallax = 1.5
    camera:setDamping(10)
    camera:setFocus(player)

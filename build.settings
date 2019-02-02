@@ -42,8 +42,8 @@ settings =
     --
     window =
     {
-        defaultViewWidth = 768,
-        defaultViewHeight = 1280,
+        defaultViewWidth = 1920,
+        defaultViewHeight = 1080,
         titleText = {
             default = "Corona Template",
             ["en‐us"] = "Corona Template (English‐USA)",
