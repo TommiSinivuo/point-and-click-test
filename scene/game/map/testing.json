@@ -39,7 +39,7 @@
         {
          "draworder":"topdown",
          "id":7,
-         "name":"walkboxes",
+         "name":"walkbox",
          "objects":[
                 {
                  "height":0,

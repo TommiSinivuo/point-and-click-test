@@ -11,7 +11,6 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
-local map
 local player
 local camera
 
@@ -41,7 +40,7 @@ local function walkTo(event)
 end
 
 local function configureWalkboxes(map)
-   local walkboxLayer = map:findLayer("walkboxes")
+   local walkboxLayer = map:findLayer("walkbox")
    walkboxLayer.alpha = 0.5
    walkboxLayer.isVisible = true
    walkboxLayer.isHitTestable = true
@@ -49,16 +48,6 @@ local function configureWalkboxes(map)
    for _, v in ipairs(walkboxes) do
       v:addEventListener("tap", walkTo)
    end
-end
-
-local layerNameToNumber = {}
-
-local function getLayerNumber( name )
-   return layerNameToNumber[name]
-end
-
-local function getCameraLayerByName( camera, layerName )
-   return camera:layer(getLayerNumber(layerName))
 end
 
 local function createCamera(map)
@@ -72,10 +61,6 @@ local function createCamera(map)
    return camera
 end
 
-local function endGame()
-   composer.gotoScene("scene.menu", {time = 800, effect = "crossFade"})
-end
-
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
 -- -----------------------------------------------------------------------------------
@@ -84,19 +69,11 @@ end
 function scene:create(event)
    local sceneGroup = self.view
    -- Code here runs when the scene is first created but has not yet appeared on screen
-   map = loadAndExtendMap()
+   local map = loadAndExtendMap()
    player = map:findObject("player")
-
    configureWalkboxes(map)
-
    camera = createCamera(map)
-
    sceneGroup:insert(map)
-
-   local endButton = display.newText(sceneGroup, "End Game", display.contentCenterX, 32, native.systemFont, 44)
-   endButton:setFillColor(0.82, 0.86, 1)
-
-   endButton:addEventListener("tap", endGame)
 end
 
 -- show()
