@@ -1,4 +1,8 @@
 local composer = require("composer")
+local tiled = require("com.ponywolf.ponytiled")
+local json = require("json")
+local perspective = require("com.gymbylcoding.perspective")
+local Camera = require("io.pixeli.camera")
 
 local scene = composer.newScene()
 
@@ -7,9 +11,52 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
-local function gotoGame()
-   local params = {mapDataDir = "scene/game/map", mapFilename = "testing.json", extensionsPkg = "scene.game.lib"}
-   composer.gotoScene("scene.game", {time = 800, effect = "crossFade", params = params})
+local player
+local camera
+
+local function loadMap(mapDataDir, mapFilename)
+   local mapFilename = mapDataDir .. "/" .. mapFilename
+   local mapData = json.decodeFile(system.pathForFile(mapFilename, system.ResourceDirectory))
+   return tiled.new(mapData, mapDataDir)
+end
+
+local function extendMapObjects(map, extensionsPkg)
+   map.extensions = extensionsPkg .. "."
+   map:extend("player")
+end
+
+local function loadAndExtendMap(mapDataDir, mapFilename, extensionsPkg)
+   local map = loadMap(mapDataDir, mapFilename)
+   extendMapObjects(map, extensionsPkg)
+   return map
+end
+
+local function walkTo(event)
+   print("event XY: " .. event.x .. "," .. event.y)
+   local playerContentX, playerContentY = player:localToContent(0, 0)
+   local dx, dy = event.x - playerContentX, event.y - playerContentY
+   local targetX, targetY = player.x + dx, player.y + dy
+   transition.to(player, { x=targetX, y=targetY, time=1000 })
+end
+
+local function configureWalkboxes(map)
+   local walkboxLayer = map:findLayer("walkbox")
+   walkboxLayer.alpha = 0.5
+   walkboxLayer.isVisible = true
+   walkboxLayer.isHitTestable = true
+   local walkboxes = map:listTypes("walkbox")
+   for _, v in ipairs(walkboxes) do
+      v:addEventListener("tap", walkTo)
+   end
+end
+
+function scene:createCamera(map)
+   local camera = Camera:new()
+   camera:addLayers(map)
+   self:configureCamera(camera)
+   camera:setFocus(player)
+   camera:track()
+   return camera
 end
 
 -- -----------------------------------------------------------------------------------
@@ -19,13 +66,14 @@ end
 -- create()
 function scene:create(event)
    local sceneGroup = self.view
+   local params = event.params
    -- Code here runs when the scene is first created but has not yet appeared on screen
+   local map = loadAndExtendMap(params.mapDataDir, params.mapFilename, params.extensionsPkg)
+   player = map:findObject("player")
+   configureWalkboxes(map)
+   camera = self:createCamera(map)
 
-   local playButton =
-      display.newText(sceneGroup, "Play", display.contentCenterX, display.contentCenterY, native.systemFont, 44)
-   playButton:setFillColor(0.82, 0.86, 1)
-
-   playButton:addEventListener("tap", gotoGame)
+   sceneGroup:insert(map) -- this doesn't have any effect?
 end
 
 -- show()

@@ -24,4 +24,4 @@ math.randomseed(os.time())
 audio.reserveChannels(1)
 
 -- go to the menu scene
-composer.gotoScene("scene.game")
+composer.gotoScene("scene.menu")
