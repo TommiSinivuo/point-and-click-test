@@ -8,8 +8,8 @@ local scene = composer.newScene()
 -- -----------------------------------------------------------------------------------
 
 local function gotoGame()
-   local params = {mapDataDir = "scene/game/map", mapFilename = "testing.json", extensionsPkg = "scene.game.lib"}
-   composer.gotoScene("scene.game", {time = 800, effect = "crossFade", params = params})
+   --local params = {mapDataDir = "scene/game/map", mapFilename = "testing.json", extensionsPkg = "scene.game.lib"}
+   composer.gotoScene("io.pixeli.gamescene", {time = 800, effect = "crossFade", params = {roomKey = "room1"}})
 end
 
 -- -----------------------------------------------------------------------------------

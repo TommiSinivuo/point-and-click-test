@@ -1,8 +1,7 @@
 local composer = require("composer")
 local tiled = require("com.ponywolf.ponytiled")
 local json = require("json")
-local perspective = require("com.gymbylcoding.perspective")
-local Camera = require("io.pixeli.camera")
+local view = require("io.pixeli.camera")
 
 local scene = composer.newScene()
 
@@ -11,6 +10,7 @@ local scene = composer.newScene()
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
 
+local map
 local player
 local camera
 
@@ -50,13 +50,33 @@ local function configureWalkboxes(map)
    end
 end
 
-function scene:createCamera(map)
-   local camera = Camera:new()
+function TiledMap(config)
+   map = loadAndExtendMap(config.mapDataDir, config.mapFilename, config.extensionsPkg)
+   player = map:findObject("player")
+   configureWalkboxes(map)
+end
+
+function Camera(config)
+   camera = view:new()
    camera:addLayers(map)
-   self:configureCamera(camera)
+   if config.boundsLayer then
+      camera:setBoundsFromLayer(config.boundsLayer)
+   end
+   if config.parallaxConfig then
+      for layerName, properties in pairs(config.parallaxConfig) do
+         layer = camera:findLayer(layerName)
+         for property, value in pairs(properties) do
+            if property == "xParallax" then
+               layer.xParallax = value
+            elseif property == "yParallax" then
+               layer.yParralax = value
+            end
+         end
+      end
+   end
+   camera:setDamping(10)
    camera:setFocus(player)
    camera:track()
-   return camera
 end
 
 -- -----------------------------------------------------------------------------------
@@ -66,14 +86,10 @@ end
 -- create()
 function scene:create(event)
    local sceneGroup = self.view
-   local params = event.params
-   -- Code here runs when the scene is first created but has not yet appeared on screen
-   local map = loadAndExtendMap(params.mapDataDir, params.mapFilename, params.extensionsPkg)
-   player = map:findObject("player")
-   configureWalkboxes(map)
-   camera = self:createCamera(map)
-
-   sceneGroup:insert(map) -- this doesn't have any effect?
+   local roomKey = event.params.roomKey
+   local path = system.pathForFile("scene/" .. roomKey .. ".lua")
+   dofile(path)
+   --sceneGroup:insert(map) -- this doesn't have any effect?
 end
 
 -- show()
