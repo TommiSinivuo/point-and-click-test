@@ -32,7 +32,7 @@ function Camera:addLayers(map)
       local tiledLayer = map:findLayer(layerName)
       self.view:add(tiledLayer, cameraLayerNum, false)
       self.layerNumForName[layerName] = cameraLayerNum
-   end 
+   end
 end
 
 function Camera:findLayer(name)

@@ -1,0 +1,15 @@
+{
+    "map": {
+        "dataDir": "scene/room1/map",
+        "filename": "testing.json",
+        "extensions": "scene.room1.lib"
+    },
+    "camera": {
+        "boundsLayer": "background",
+        "parallax": {
+            "foreground": {
+                "x": 1.5
+            }
+        }
+    }
+}

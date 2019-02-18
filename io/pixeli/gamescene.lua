@@ -9,7 +9,6 @@ local scene = composer.newScene()
 -- Code outside of the scene event functions below will only be executed ONCE unless
 -- the scene is removed entirely (not recycled) via "composer.removeScene()"
 -- -----------------------------------------------------------------------------------
-
 local map
 local player
 local camera
@@ -50,26 +49,26 @@ local function configureWalkboxes(map)
    end
 end
 
-function TiledMap(config)
-   map = loadAndExtendMap(config.mapDataDir, config.mapFilename, config.extensionsPkg)
+function createMap(config)
+   map = loadAndExtendMap(config.dataDir, config.filename, config.extensions)
    player = map:findObject("player")
    configureWalkboxes(map)
 end
 
-function Camera(config)
+function createCamera(config)
    camera = view:new()
    camera:addLayers(map)
    if config.boundsLayer then
       camera:setBoundsFromLayer(config.boundsLayer)
    end
-   if config.parallaxConfig then
-      for layerName, properties in pairs(config.parallaxConfig) do
+   if config.parallax then
+      for layerName, properties in pairs(config.parallax) do
          layer = camera:findLayer(layerName)
          for property, value in pairs(properties) do
-            if property == "xParallax" then
+            if property == "x" then
                layer.xParallax = value
-            elseif property == "yParallax" then
-               layer.yParralax = value
+            elseif property == "y" then
+               layer.yParallax = value
             end
          end
       end
@@ -77,6 +76,25 @@ function Camera(config)
    camera:setDamping(10)
    camera:setFocus(player)
    camera:track()
+end
+
+function loadRoom(roomKey)
+   local filePath = system.pathForFile("scene/" .. roomKey.. "/" .. "room.json")
+   local file = io.open(filePath, "r")
+   local roomConfig = {}
+   if file then
+      local contents = file:read("*a")
+      io.close(file)
+      roomConfig = json.decode(contents)
+   end
+   mapConfig = roomConfig.map
+   cameraConfig = roomConfig.camera
+   if mapConfig then
+      createMap(mapConfig)
+   end
+   if cameraConfig then
+      createCamera(cameraConfig)
+   end
 end
 
 -- -----------------------------------------------------------------------------------
@@ -87,9 +105,7 @@ end
 function scene:create(event)
    local sceneGroup = self.view
    local roomKey = event.params.roomKey
-   local path = system.pathForFile("scene/" .. roomKey .. ".lua")
-   dofile(path)
-   --sceneGroup:insert(map) -- this doesn't have any effect?
+   loadRoom(roomKey)
 end
 
 -- show()
